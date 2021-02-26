@@ -1,9 +1,16 @@
 package org.academiadecodigo.cachealots.battleship;
 
+import examples.integer.IntegerRangeInputScannerTest;
+import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
+import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
+import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
+import org.academiadecodigo.bootcamp.scanners.string.StringSetInputScanner;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BoardBuilder {
 
@@ -14,6 +21,11 @@ public class BoardBuilder {
 
     int remainingBoats = jetski + fishingBoat + bigger + titanic;
 
+    Player player;
+
+    public BoardBuilder(Player player) {
+        this.player = player;
+    }
 
     public String[][] defaultBoard=new String[10][10];
 
@@ -29,7 +41,7 @@ public class BoardBuilder {
     }
 
     // return and array with
-    public String[][] build(Player player) {
+    public void build() {
 
 
         while (remainingBoats > 0) {
@@ -44,10 +56,10 @@ public class BoardBuilder {
 
             int choice = player.getPrompt().getUserInput(menu);
 
-           if (canBuildBoat(choice)){
-               buildBoat(BoatType.values()[choice-1]);
-           }
-
+            if (canBuildBoat(choice)){
+                buildBoat(BoatType.values()[choice-1]);
+                remainingBoats--;
+            }
 
         }
 
@@ -62,7 +74,6 @@ public class BoardBuilder {
         //
 
 
-        return null;
     }
 
 
@@ -77,9 +88,87 @@ public class BoardBuilder {
 
     }
 
-    public ?? buildBoat(BoatType type){
+    public void buildBoat(BoatType type){
+
 
         int cellsLeft = type.getSize();
+
+        IntegerInputScanner askCol = new IntegerRangeInputScanner(1, 10);
+        IntegerInputScanner askRow = new IntegerRangeInputScanner(1, 10);
+
+        askCol.setMessage("Column? ");
+        askRow.setMessage("Row? ");
+
+        Set<String> hvOptions = new HashSet<>();
+        hvOptions.add("horizontal");
+        hvOptions.add("vertical");
+        hvOptions.add("exit");
+
+        StringInputScanner askHorizontalVertical = new StringSetInputScanner(hvOptions);
+
+        Set<String> horizontalOptions = new HashSet<>();
+        horizontalOptions.add("left");
+        horizontalOptions.add("right");
+        horizontalOptions.add("exit");
+
+
+        StringInputScanner askHorizontalDirection = new StringSetInputScanner(horizontalOptions);
+
+        Set<String> verticalOptions = new HashSet<>();
+        verticalOptions.add("up");
+        verticalOptions.add("down");
+        verticalOptions.add("exit");
+
+
+        StringInputScanner askVerticalDirection = new StringSetInputScanner(verticalOptions);
+
+
+        //---------------
+
+        while (cellsLeft > 0) {
+
+            int col = player.getPrompt().getUserInput(askCol);
+            int row = player.getPrompt().getUserInput(askRow);
+
+            if(!player.getBoard()[col][row].equals("🌊")){
+                player.getOut().print("Invalid coordinates, try again!");
+                continue;
+            }
+
+            String hv= player.getPrompt().getUserInput(askHorizontalVertical);
+
+            String direction;
+
+            switch (hv) {
+                case "horizontal":
+                    direction = player.getPrompt().getUserInput(askHorizontalDirection);
+                    break;
+                case "vertical":
+                    direction = player.getPrompt().getUserInput(askVerticalDirection);
+                    break;
+                default:
+                    continue;
+            }
+
+            switch (direction){
+                case "up":
+
+                case "down":
+
+                case "left":
+
+                default:
+
+
+            }
+
+        }
+
+
+
+
+
+
 
 
 
@@ -91,30 +180,30 @@ public class BoardBuilder {
 
 
 /*
-*  menu
-*
-*  int playerChoice
-*
-*  public BoatType getBoatType (int playerChoice)
-*
-* if(playerCanBuildBoat(getBoatType(playerChoice))){
-*
-*  buildBoat(getBoatType(playerChoice))
-* }
-*
-*
-*
-*
-* public ?? buildBoat(BoatType type){
-*
-*       int cellsLeft = type.getSize();
-*
-*       while(cellsLeft > 0) {
-*
-* ------
-* cellsLeft--
-* }
-*
-*
-*
-* */
+ *  menu
+ *
+ *  int playerChoice
+ *
+ *  public BoatType getBoatType (int playerChoice)
+ *
+ * if(playerCanBuildBoat(getBoatType(playerChoice))){
+ *
+ *  buildBoat(getBoatType(playerChoice))
+ * }
+ *
+ *
+ *
+ *
+ * public ?? buildBoat(BoatType type){
+ *
+ *       int cellsLeft = type.getSize();
+ *
+ *       while(cellsLeft > 0) {
+ *
+ * ------
+ * cellsLeft--
+ * }
+ *
+ *
+ *
+ * */

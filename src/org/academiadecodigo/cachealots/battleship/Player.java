@@ -24,7 +24,7 @@ public class Player implements Runnable {
     public Player(Socket socket, boolean waitingForOpponent) throws IOException {
         this.socket = socket;
         this.waitingForOpponent = waitingForOpponent;
-        bibi = new BoardBuilder();
+        bibi = new BoardBuilder(this);
 
         ownBoard = bibi.buildDefault();
         opponentBoard = bibi.buildDefault();
@@ -47,7 +47,7 @@ public class Player implements Runnable {
         }
 
 
-        ownBoard = bibi.build(this);
+        bibi.build();
 
 
 
@@ -69,4 +69,15 @@ public class Player implements Runnable {
     public Prompt getPrompt() {
         return prompt;
     }
+
+    public PrintWriter getOut() {
+        return out;
+    }
+
+    public void updateBoard(int col, int row){
+
+        ownBoard[col][row] = "🚢";
+
+    }
+
 }
