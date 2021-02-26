@@ -18,6 +18,22 @@ public class BattleshipServer {
 
     public static void main(String[] args) {
 
+        /*
+        Veryruru Importanturu
+
+        System.out.println("🍆 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣");
+        System.out.println("0️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("1️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("2️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("3️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("4️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("5️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("6️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("7️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("8️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        System.out.println("9️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
+        */
+
         BattleshipServer bs = null;
         try {
             bs = new BattleshipServer();
@@ -39,7 +55,11 @@ public class BattleshipServer {
 
     public void start() throws IOException {
 
+        System.out.println("Welcome to some battleship game i dunno\n\n");
+
         while(true){
+
+            System.out.println("Waiting for connections…");
 
             Socket playerSocket = serverSocket.accept(); //blocks
 
