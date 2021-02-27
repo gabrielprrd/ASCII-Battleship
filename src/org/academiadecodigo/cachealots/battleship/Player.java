@@ -1,11 +1,14 @@
 package org.academiadecodigo.cachealots.battleship;
 
 import org.academiadecodigo.bootcamp.Prompt;
+import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
+import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Player implements Runnable {
 
@@ -17,13 +20,20 @@ public class Player implements Runnable {
     private String[][] opponentBoard; //presentation : initially only waves
     private String[][] actualOpponentBoard;
     private BoardBuilder bibi;
+    private boolean finishedBuilding;
+    private boolean gameOver;
+    private BattleshipServer server;
 
     private final PrintWriter out;
     private final Prompt prompt;
+    private boolean myTurn;
 
-    public Player(Socket socket, boolean waitingForOpponent) throws IOException {
+
+    public Player(Socket socket, boolean waitingForOpponent, BattleshipServer server) throws IOException {
         this.socket = socket;
         this.waitingForOpponent = waitingForOpponent;
+        this.server = server;
+
         bibi = new BoardBuilder(this);
 
         ownBoard = bibi.buildDefault();
@@ -70,15 +80,153 @@ public class Player implements Runnable {
         }
 
         while(waitingForOpponent) {
-
             try { Thread.sleep(500);
-
             } catch (InterruptedException e) { e.printStackTrace(); }
         }
 
         out.print(this.toString(true));
         out.flush();
-        bibi.build();
+
+        bibi.build(); //run() blocks here while player is building
+
+
+        finishedBuilding = true;
+
+
+        if(!opponent.isFinishedBuilding()) {
+            out.println("\nWaiting for opponent to finish building...\n");
+            out.flush();
+            myTurn = true;
+        }
+
+        while (!opponent.isFinishedBuilding()){
+            try { Thread.sleep(500);
+            } catch (InterruptedException e) { e.printStackTrace(); }
+        }
+
+        out.println("Both finished building!\n");
+        out.flush();
+
+        actualOpponentBoard = opponent.getBoard();
+
+        try { startGame();
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void startGame() throws InterruptedException, IOException {
+
+        IntegerInputScanner askShotCol = new IntegerRangeInputScanner(0, 9);
+        IntegerInputScanner askShotRow = new IntegerRangeInputScanner(0, 9);
+        askShotCol.setMessage("Where to shoot? (Column) ");
+        askShotRow.setMessage("Where to shoot? (Row) ");
+
+        int opponentBoatCells = BoatType.JETSKI.getSize() * BoatType.JETSKI.getQuantity() +
+                BoatType.FISHINGBOAT.getSize() * BoatType.FISHINGBOAT.getQuantity() +
+                BoatType.BIGGER.getSize() * BoatType.BIGGER.getQuantity() +
+                BoatType.TITANIC.getSize() * BoatType.TITANIC.getQuantity();
+
+
+        while (opponentBoatCells > 0){ //
+
+
+
+            if (!myTurn) {
+                out.println("Waiting for opponent to shoot...");
+                out.flush();
+            }
+
+
+            while(!myTurn){
+                Thread.sleep(100);
+            }
+
+
+            while(true){ //my Turn in progress...
+
+                int shotCol = prompt.getUserInput(askShotCol);
+                int shotRow = prompt.getUserInput(askShotRow);
+
+
+                if(opponentBoard[shotCol][shotRow].equals("💥") || opponentBoard[shotCol][shotRow].equals("💦️")) {
+                    out.println("Invalid shot: You already shot here!\n"); out.flush();
+                    continue;
+                }
+
+                out.println("Sending shot..."); out.flush();
+
+
+                if(actualOpponentBoard[shotCol][shotRow].equals("🚢️")) {
+
+                    opponentBoard[shotCol][shotRow] = "💥️";
+
+                    opponent.updateBoard(shotCol, shotRow, "💥");
+
+                    out.println("💥 HIT BOAT!!! \nYour turn again!\n\n"); out.flush();
+
+                    opponent.getOut().println(opponent.toString(true));
+
+                    opponent.getOut().println("Your boat got shot!\n" +
+                            "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
+                            "Preparing to receive another shot...\n");
+                    opponent.getOut().flush();
+
+                    opponentBoatCells--;
+
+                    continue;
+
+                } else {
+
+                    opponentBoard[shotCol][shotRow] = "💦️";
+                    opponent.updateBoard(shotCol, shotRow, "💦️");
+
+                    out.println("💦️ Hit water... "); out.flush();
+
+                    opponent.getOut().println("Opponent missed!\n" +
+                            "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
+                            "Your turn again!\n");
+                    opponent.getOut().flush();
+
+                    myTurn = false;
+                    opponent.setTurn(true);
+                    break;
+
+
+
+                }
+
+            }
+
+        }
+
+        opponent.getOut().println("You Lose!"); opponent.getOut().flush();
+        out.println("You Win!"); out.flush();
+
+        server.eject(opponent);
+        server.eject(this);
+
+        opponent.closeSocket();
+        socket.close();
+
+    }
+
+
+    //-------------------------
+
+    public void closeSocket() throws IOException {
+        socket.close();
+    }
+
+
+    public boolean hasLost(){
+        return gameOver;
+    }
+
+    public void lose() {
+        this.gameOver = true;
     }
 
     public void setOpponent(Player opponent) {
@@ -101,10 +249,18 @@ public class Player implements Runnable {
         return out;
     }
 
-    public void updateBoard(int col, int row){
+    public boolean isFinishedBuilding() {
+        return finishedBuilding;
+    }
 
-        ownBoard[col][row] = "🚢";
+    public void updateBoard(int col, int row, String emoji){
 
+        ownBoard[col][row] = emoji;
+
+    }
+
+    public void setTurn(boolean myTurn) {
+        this.myTurn = myTurn;
     }
 
     public String toString(boolean justOwnBoard) {

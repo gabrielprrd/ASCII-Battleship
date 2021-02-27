@@ -207,22 +207,22 @@ public class BoardBuilder {
         switch (direction) {
             case 1: //up
                 for (int thisRow = row; thisRow > row-cellSize; thisRow--) {
-                    player.updateBoard(col, thisRow);
+                    player.updateBoard(col, thisRow, "🚢️");
                 }
                 break;
             case 2: //down
                 for (int thisRow = row; thisRow < row+cellSize; thisRow++) {
-                    player.updateBoard(col, thisRow);
+                    player.updateBoard(col, thisRow, "🚢️");
                 }
                 break;
             case 3: //left
                 for (int thisCol = col; thisCol > col-cellSize; thisCol--) {
-                    player.updateBoard(thisCol, row);
+                    player.updateBoard(thisCol, row, "🚢️");
                 }
                 break;
             case 4: //right
                 for (int thisCol = col; thisCol < col+cellSize; thisCol++) {
-                    player.updateBoard(thisCol, row);
+                    player.updateBoard(thisCol, row, "🚢️");
                 }
                 break;
             default: //exit

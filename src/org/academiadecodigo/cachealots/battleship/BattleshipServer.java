@@ -83,7 +83,7 @@ public class BattleshipServer {
 
             Socket playerSocket = serverSocket.accept(); //blocks
 
-            Player player = new Player(playerSocket, !playerWaiting); //player will wait if alone
+            Player player = new Player(playerSocket, !playerWaiting, this); //player will wait if alone
             players.add(player);
             threadPool.submit(player);
 
@@ -104,4 +104,9 @@ public class BattleshipServer {
 
         }
     }
+
+    public void eject(Player player){
+        players.remove(player);
+    }
+
 }
