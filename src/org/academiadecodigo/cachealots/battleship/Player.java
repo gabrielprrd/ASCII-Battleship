@@ -159,17 +159,19 @@ public class Player implements Runnable {
                 out.println("Sending shot..."); out.flush();
 
 
+
+
                 if(actualOpponentBoard[shotCol][shotRow].equals("🚢️")) {
 
                     opponentBoard[shotCol][shotRow] = "💥️";
 
                     opponent.updateBoard(shotCol, shotRow, "💥");
 
-                    out.println(this.toString(false) + "\n");
+                    out.println(this.toString() + "\n");
                     out.println("💥 HIT BOAT!!! \nYour turn again!\n\n");
                     out.flush();
 
-                    opponent.getOut().println(opponent.toString(true));
+                    opponent.getOut().println(opponent.toString());
                     opponent.getOut().println("Your boat got shot!\n" +
                             "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
                             "Preparing to receive another shot...\n");
@@ -185,11 +187,11 @@ public class Player implements Runnable {
                     opponent.updateBoard(shotCol, shotRow, "💦️");
 
                     out.println("💦️ Hit water... \n");
-                    out.println(this.toString(false));
+                    out.println(this.toString());
                     out.flush();
 
 
-                    opponent.getOut().println(opponent.toString(true) + "\n");
+                    opponent.getOut().println(opponent.toString() + "\n");
                     opponent.getOut().println("Opponent missed!\n" +
                             "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
                             "Your turn again!\n");
@@ -297,6 +299,11 @@ public class Player implements Runnable {
 
         return display.toString();
     }
+
+    public String toString(){
+        return toString(false);
+    }
+
 
     private String numberToString(int row) {
         switch (row){
