@@ -58,7 +58,23 @@ public class BattleshipServer {
     public void start() throws IOException {
         
         // we need to broadcast this message
-        System.out.println("Welcome to some battleship game i dunno\n\n");
+        System.out.println("Starting BattoruShippo server...\n\n");
+
+        System.out.println("\n" +
+                "                                     |__\n" +
+                "                                     |\\/\n" +
+                "                                     ---\n" +
+                "                                     / | [\n" +
+                "                              !      | |||\n" +
+                "                            _/|     _/|-++'\n" +
+                "                        +  +--|    |--|--|_ |-\n" +
+                "                     { /|__|  |/\\__|  |--- |||__/\n" +
+                "                    +---------------___[}-_===_.'____                 /\\ \n" +
+                "                ____`-' ||___-{]_| _[}-  |     |_[___\\==--            \\/   _\n" +
+                " __..._____--==/___]_|__|_____________________________[___\\==--____,------' .7\n" +
+                "|                                                           USS Cachealots /\n" +
+                " \\_________________________________________________________________________|\n");
+
         System.out.println("Server running on port: " + serverSocket.getLocalPort());
 
         while(true){
