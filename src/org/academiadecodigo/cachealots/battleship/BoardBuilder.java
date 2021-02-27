@@ -141,6 +141,10 @@ public class BoardBuilder {
             if (checkIfCanDraw(col, row, direction, cellSize)) {
                 draw(col, row, direction, cellSize);
 
+            } else {
+                    player.getOut().print("Can't draw there! \n");
+                    player.getOut().flush();
+
             }
         }
 
@@ -151,15 +155,13 @@ public class BoardBuilder {
     public boolean checkIfCanDraw(int col, int row, int direction, int cellSize) {
 
         switch (direction) {
-            case 1:
 
+            case 1:
                 for (int thisRow = row; thisRow > row - cellSize; thisRow--) {
                     if(thisRow<0){return false;}
                     if (!player.getBoard()[col][thisRow].equals("🌊")) {
                         return false;
                     }
-                    player.getOut().print("Can't draw there!");
-                    player.getOut().flush();
                 }
 
                 return true;
@@ -170,8 +172,6 @@ public class BoardBuilder {
                     if (!player.getBoard()[col][thisRow].equals("🌊")) {
                         return false;
                     }
-                    player.getOut().print("Can't draw there!");
-                    player.getOut().flush();
                 }
                 return true;
 
@@ -181,8 +181,6 @@ public class BoardBuilder {
                     if (!player.getBoard()[thisCol][row].equals("🌊")) {
                         return false;
                     }
-                    player.getOut().print("Can't draw there!");
-                    player.getOut().flush();
                 }
                 return true;
 
@@ -192,8 +190,6 @@ public class BoardBuilder {
                     if (!player.getBoard()[thisCol][row].equals("🌊")) {
                         return false;
                     }
-                    player.getOut().print("Out of bounds! Can't draw there!\n");
-                    player.getOut().flush();
                 }
                 return true;
 
@@ -236,33 +232,3 @@ public class BoardBuilder {
     }
 
 }
-
-
-/*
- *  menu
- *
- *  int playerChoice
- *
- *  public BoatType getBoatType (int playerChoice)
- *
- * if(playerCanBuildBoat(getBoatType(playerChoice))){
- *
- *  buildBoat(getBoatType(playerChoice))
- * }
- *
- *
- *
- *
- * public ?? buildBoat(BoatType type){
- *
- *       int cellsLeft = type.getSize();
- *
- *       while(cellsLeft > 0) {
- *
- * ------
- * cellsLeft--
- * }
- *
- *
- *
- * */
