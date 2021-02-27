@@ -37,7 +37,10 @@ public class Player implements Runnable {
     @Override
     public void run() {
 
-        if(waitingForOpponent) { System.out.println("Waiting for opponent…"); }
+        if(waitingForOpponent) {
+            out.println("Waiting for opponent…");
+            out.flush();
+        }
 
         while(waitingForOpponent) {
 
@@ -45,6 +48,7 @@ public class Player implements Runnable {
 
             } catch (InterruptedException e) { e.printStackTrace(); }
         }
+
         out.print(this.toString(true));
         out.flush();
         bibi.build();

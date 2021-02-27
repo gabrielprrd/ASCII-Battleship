@@ -54,7 +54,8 @@ public class BattleshipServer {
 
 
     public void start() throws IOException {
-
+        
+        // we need to broadcast this message
         System.out.println("Welcome to some battleship game i dunno\n\n");
 
         while(true){
@@ -75,13 +76,12 @@ public class BattleshipServer {
             Player opponent = players.get(players.indexOf(player)-1);
             player.setOpponent(opponent);
             player.setWaitingForOpponent(false);
+            opponent.setWaitingForOpponent(false);
+
 
             opponent.setOpponent(player);
 
             playerWaiting = false;
-
-            //
-
 
         }
     }
