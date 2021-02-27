@@ -52,10 +52,6 @@ public class Player implements Runnable {
         out.print(this.toString(true));
         out.flush();
         bibi.build();
-
-
-
-
     }
 
     public void setOpponent(Player opponent) {

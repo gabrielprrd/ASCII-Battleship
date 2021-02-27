@@ -18,6 +18,7 @@ public class BoardBuilder {
     int fishingBoat = BoatType.FISHINGBOAT.getQuantity();
     int bigger = BoatType.BIGGER.getQuantity();
     int titanic = BoatType.TITANIC.getQuantity();
+    private boolean buildSuccessful;
 
     int remainingBoats = jetski + fishingBoat + bigger + titanic;
 
@@ -43,7 +44,6 @@ public class BoardBuilder {
     // return and array with
     public void build() {
 
-
         while (remainingBoats > 0) {
 
             String[] menuOptions = {
@@ -57,75 +57,76 @@ public class BoardBuilder {
             int choice = player.getPrompt().getUserInput(menu);
 
             if (canBuildBoat(choice)) {
-                buildBoat(BoatType.values()[choice - 1]);
+                BoatType boat = BoatType.values()[choice - 1];
+                buildBoat(boat);
                 remainingBoats--;
+
+                // decrements number of available boats for the specific option
+                switch (boat.getName()){
+                    case "jetski":
+                        jetski--;
+                    break;
+                    case "fishingBoat":
+                        fishingBoat--;
+                    break;
+                    case "bigger":
+                        bigger--;
+                        break;
+                    case "titanic":
+                        titanic--;
+                        break;
+                    default:
+                        System.out.println("deu merda");
+                        break;
+                }
+
+                // draw board through player's output stream
+                player.getOut().print(player.toString(true));
+                player.getOut().flush();
+                buildSuccessful = false;
             }
 
         }
-
-        //menu
-
-        // while(notDone)
-        // --what ship?
-        // --where (col/row)
-        // --how(h/v, l/r|up/down)
-        // --is this ok?
-
-        //
-
 
     }
 
 
     public boolean canBuildBoat(int playerChoice) {
 
-        return switch (playerChoice) {
-            case 1 -> !(jetski == 0);
-            case 2 -> !(fishingBoat == 0);
-            case 3 -> !(bigger == 0);
-            default -> !(titanic == 0);
-        };
+        switch (playerChoice) {
+            case 1:
+                return !(jetski == 0);
+            case 2:
+                return !(fishingBoat == 0);
+            case 3:
+                return !(bigger == 0);
+            case 4:
+                return !(titanic == 0);
+            default:
+                return false;
+        }
 
     }
 
     public void buildBoat(BoatType type) {
 
 
-        int cellsLeft = type.getSize();
+        int cellSize = type.getSize();
 
-        IntegerInputScanner askCol = new IntegerRangeInputScanner(1, 10);
-        IntegerInputScanner askRow = new IntegerRangeInputScanner(1, 10);
+        IntegerInputScanner askCol = new IntegerRangeInputScanner(0, 9);
+        IntegerInputScanner askRow = new IntegerRangeInputScanner(0, 9);
 
         askCol.setMessage("Column? ");
         askRow.setMessage("Row? ");
 
-        Set<String> hvOptions = new HashSet<>();
-        hvOptions.add("horizontal");
-        hvOptions.add("vertical");
-        hvOptions.add("exit");
+        String[] directions = {"Up", "Down", "Left", "Right", "Back"};
 
-        StringInputScanner askHorizontalVertical = new StringSetInputScanner(hvOptions);
+        MenuInputScanner directionMenu = new MenuInputScanner(directions);
 
-        Set<String> horizontalOptions = new HashSet<>();
-        horizontalOptions.add("left");
-        horizontalOptions.add("right");
-        horizontalOptions.add("exit");
-
-
-        StringInputScanner askHorizontalDirection = new StringSetInputScanner(horizontalOptions);
-
-        Set<String> verticalOptions = new HashSet<>();
-        verticalOptions.add("up");
-        verticalOptions.add("down");
-        verticalOptions.add("exit");
-
-
-        StringInputScanner askVerticalDirection = new StringSetInputScanner(verticalOptions);
-
+        directionMenu.setMessage("Choose a direction: ");
 
         //---------------
-
-        while (cellsLeft > 0) {
+        while (!buildSuccessful) {
 
             int col = player.getPrompt().getUserInput(askCol);
             int row = player.getPrompt().getUserInput(askRow);
@@ -135,54 +136,42 @@ public class BoardBuilder {
                 continue;
             }
 
-            String hv = player.getPrompt().getUserInput(askHorizontalVertical);
+            int direction = player.getPrompt().getUserInput(directionMenu);
 
-            String direction;
-
-            switch (hv) {
-                case "horizontal":
-                    direction = player.getPrompt().getUserInput(askHorizontalDirection);
-                    break;
-                case "vertical":
-                    direction = player.getPrompt().getUserInput(askVerticalDirection);
-                    break;
-                default:
-                    continue;
-            }
-            if (checkIfCanDraw(row, col, direction, cellsLeft)) {
+            if (checkIfCanDraw(col, row, direction, cellSize)) {
+                draw(col, row, direction, cellSize);
 
             }
-
-
-
-
-
-
         }
 
 
     }
 
-    public boolean checkIfCanDraw(int row, int col, String direction, int cellSize) {
+    // check if can draw and draw
+    public boolean checkIfCanDraw(int col, int row, int direction, int cellSize) {
 
         switch (direction) {
-            case "up":
+            case 1:
 
-                for (int thisRow = row; thisRow > row -cellSize; thisRow--) {
+                for (int thisRow = row; thisRow > row - cellSize; thisRow--) {
                     if(thisRow<0){return false;}
                     if (!player.getBoard()[col][thisRow].equals("🌊")) {
                         return false;
                     }
                 }
+
                 return true;
-            case "down":
+
+            case 2:
                 for (int thisRow = row; thisRow < row + cellSize; thisRow++) {
                     if(thisRow>player.getBoard().length-1){return false;}
                     if (!player.getBoard()[col][thisRow].equals("🌊")) {
                         return false;
                     }
                 }
-            case "left":
+                return true;
+
+            case 3:
                 for (int thisCol = col; thisCol > col -cellSize; thisCol--) {
                     if(thisCol<0){return false;}
                     if (!player.getBoard()[thisCol][row].equals("🌊")) {
@@ -191,7 +180,7 @@ public class BoardBuilder {
                 }
                 return true;
 
-            case "right":
+            case 4:
                 for (int thisCol = col; thisCol < col +  cellSize; thisCol++) {
                     if(thisCol>player.getBoard().length-1){return false;}
                     if (!player.getBoard()[thisCol][row].equals("🌊")) {
@@ -201,10 +190,43 @@ public class BoardBuilder {
                 return true;
 
             default:
+
                 return false;
         }
 
     }
+
+    public void draw(int col, int row, int direction, int cellSize) {
+
+        buildSuccessful = true;
+
+        switch (direction) {
+            case 1: //up
+                for (int thisRow = row; thisRow > row-cellSize; thisRow--) {
+                    player.updateBoard(col, thisRow);
+                }
+                break;
+            case 2: //down
+                for (int thisRow = row; thisRow < row+cellSize; thisRow++) {
+                    player.updateBoard(col, thisRow);
+                }
+                break;
+            case 3: //left
+                for (int thisCol = col; thisCol > col-cellSize; thisCol--) {
+                    player.updateBoard(thisCol, row);
+                }
+                break;
+            case 4: //right
+                for (int thisCol = col; thisCol < col+cellSize; thisCol++) {
+                    player.updateBoard(thisCol, row);
+                }
+                break;
+            default: //exit
+                return;
+        }
+
+    }
+
 }
 
 

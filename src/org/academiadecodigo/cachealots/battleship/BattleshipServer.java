@@ -1,6 +1,8 @@
 package org.academiadecodigo.cachealots.battleship;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class BattleshipServer {
         
         // we need to broadcast this message
         System.out.println("Welcome to some battleship game i dunno\n\n");
+        System.out.println("Server running on port: " + serverSocket.getLocalPort());
 
         while(true){
 

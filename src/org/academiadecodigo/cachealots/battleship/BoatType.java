@@ -1,15 +1,17 @@
 package org.academiadecodigo.cachealots.battleship;
 
 public enum BoatType {
-     JETSKI(2, 2),
-     FISHINGBOAT(3, 2),
-     BIGGER(4, 2),
-     TITANIC(6, 1);
+     JETSKI("jetski", 2, 2),
+     FISHINGBOAT("fishingBoat", 3, 2),
+     BIGGER("bigger",4, 2),
+     TITANIC("titanic", 6, 1);
 
+     private String name;
      private int size;
      private int quantity;
 
-     BoatType(int size, int quantity) {
+     BoatType(String name, int size, int quantity) {
+          this.name = name;
           this.size = size;
           this.quantity = quantity;
      }
@@ -22,5 +24,7 @@ public enum BoatType {
           return quantity;
      }
 
-
+     public String getName() {
+          return name;
+     }
 }
