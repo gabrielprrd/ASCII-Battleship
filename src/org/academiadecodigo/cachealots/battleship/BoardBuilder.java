@@ -27,11 +27,11 @@ public class BoardBuilder {
         this.player = player;
     }
 
-    public String[][] defaultBoard=new String[10][10];
+    public String[][] defaultBoard = new String[10][10];
 
     public String[][] buildDefault() {
 
-        for (int col=0; col< defaultBoard.length; col++) {
+        for (int col = 0; col < defaultBoard.length; col++) {
             for (int row = 0; row < defaultBoard.length; row++) {
                 defaultBoard[col][row] = "🌊";
             }
@@ -56,8 +56,8 @@ public class BoardBuilder {
 
             int choice = player.getPrompt().getUserInput(menu);
 
-            if (canBuildBoat(choice)){
-                buildBoat(BoatType.values()[choice-1]);
+            if (canBuildBoat(choice)) {
+                buildBoat(BoatType.values()[choice - 1]);
                 remainingBoats--;
             }
 
@@ -77,7 +77,7 @@ public class BoardBuilder {
     }
 
 
-    public boolean canBuildBoat(int playerChoice){
+    public boolean canBuildBoat(int playerChoice) {
 
         return switch (playerChoice) {
             case 1 -> !(jetski == 0);
@@ -88,7 +88,7 @@ public class BoardBuilder {
 
     }
 
-    public void buildBoat(BoatType type){
+    public void buildBoat(BoatType type) {
 
 
         int cellsLeft = type.getSize();
@@ -130,12 +130,12 @@ public class BoardBuilder {
             int col = player.getPrompt().getUserInput(askCol);
             int row = player.getPrompt().getUserInput(askRow);
 
-            if(!player.getBoard()[col][row].equals("🌊")){
+            if (!player.getBoard()[col][row].equals("🌊")) {
                 player.getOut().print("Invalid coordinates, try again!");
                 continue;
             }
 
-            String hv= player.getPrompt().getUserInput(askHorizontalVertical);
+            String hv = player.getPrompt().getUserInput(askHorizontalVertical);
 
             String direction;
 
@@ -149,34 +149,63 @@ public class BoardBuilder {
                 default:
                     continue;
             }
-
-            switch (direction){
-                case "up":
-
-                case "down":
-
-                case "left":
-
-                default:
-
+            if (checkIfCanDraw(row, col, direction, cellsLeft)) {
 
             }
+
+
+
+
+
 
         }
 
 
-
-
-
-
-
-
-
-
     }
 
-}
+    public boolean checkIfCanDraw(int row, int col, String direction, int cellSize) {
 
+        switch (direction) {
+            case "up":
+
+                for (int thisRow = row; thisRow > row -cellSize; thisRow--) {
+                    if(thisRow<0){return false;}
+                    if (!player.getBoard()[col][thisRow].equals("🌊")) {
+                        return false;
+                    }
+                }
+                return true;
+            case "down":
+                for (int thisRow = row; thisRow < row + cellSize; thisRow++) {
+                    if(thisRow>player.getBoard().length-1){return false;}
+                    if (!player.getBoard()[col][thisRow].equals("🌊")) {
+                        return false;
+                    }
+                }
+            case "left":
+                for (int thisCol = col; thisCol > col -cellSize; thisCol--) {
+                    if(thisCol<0){return false;}
+                    if (!player.getBoard()[thisCol][row].equals("🌊")) {
+                        return false;
+                    }
+                }
+                return true;
+
+            case "right":
+                for (int thisCol = col; thisCol < col +  cellSize; thisCol++) {
+                    if(thisCol>player.getBoard().length-1){return false;}
+                    if (!player.getBoard()[thisCol][row].equals("🌊")) {
+                        return false;
+                    }
+                }
+                return true;
+
+            default:
+                return false;
+        }
+
+    }
+}
 
 
 /*
