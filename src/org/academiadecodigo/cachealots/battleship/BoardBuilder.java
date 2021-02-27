@@ -158,6 +158,8 @@ public class BoardBuilder {
                     if (!player.getBoard()[col][thisRow].equals("🌊")) {
                         return false;
                     }
+                    player.getOut().print("Can't draw there!");
+                    player.getOut().flush();
                 }
 
                 return true;
@@ -168,6 +170,8 @@ public class BoardBuilder {
                     if (!player.getBoard()[col][thisRow].equals("🌊")) {
                         return false;
                     }
+                    player.getOut().print("Can't draw there!");
+                    player.getOut().flush();
                 }
                 return true;
 
@@ -177,6 +181,8 @@ public class BoardBuilder {
                     if (!player.getBoard()[thisCol][row].equals("🌊")) {
                         return false;
                     }
+                    player.getOut().print("Can't draw there!");
+                    player.getOut().flush();
                 }
                 return true;
 
@@ -186,6 +192,8 @@ public class BoardBuilder {
                     if (!player.getBoard()[thisCol][row].equals("🌊")) {
                         return false;
                     }
+                    player.getOut().print("Out of bounds! Can't draw there!\n");
+                    player.getOut().flush();
                 }
                 return true;
 
