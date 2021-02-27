@@ -165,10 +165,11 @@ public class Player implements Runnable {
 
                     opponent.updateBoard(shotCol, shotRow, "💥");
 
-                    out.println("💥 HIT BOAT!!! \nYour turn again!\n\n"); out.flush();
+                    out.println(this.toString(false) + "\n");
+                    out.println("💥 HIT BOAT!!! \nYour turn again!\n\n");
+                    out.flush();
 
                     opponent.getOut().println(opponent.toString(true));
-
                     opponent.getOut().println("Your boat got shot!\n" +
                             "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
                             "Preparing to receive another shot...\n");
@@ -183,8 +184,12 @@ public class Player implements Runnable {
                     opponentBoard[shotCol][shotRow] = "💦️";
                     opponent.updateBoard(shotCol, shotRow, "💦️");
 
-                    out.println("💦️ Hit water... "); out.flush();
+                    out.println("💦️ Hit water... \n");
+                    out.println(this.toString(false));
+                    out.flush();
 
+
+                    opponent.getOut().println(opponent.toString(true) + "\n");
                     opponent.getOut().println("Opponent missed!\n" +
                             "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
                             "Your turn again!\n");
@@ -193,8 +198,6 @@ public class Player implements Runnable {
                     myTurn = false;
                     opponent.setTurn(true);
                     break;
-
-
 
                 }
 
