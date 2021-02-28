@@ -4,7 +4,6 @@ import org.academiadecodigo.bootcamp.Prompt;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
-import sun.misc.Signal;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -111,9 +110,6 @@ public class Player implements Runnable {
 
 
     private void startGame() throws InterruptedException, IOException {
-
-        Signal.handle(new Signal("INT"),  // SIGINT
-                signal -> System.out.println("Interrupted by Ctrl+C"));
 
         IntegerInputScanner askShotCol = new IntegerRangeInputScanner(0, 9);
         IntegerInputScanner askShotRow = new IntegerRangeInputScanner(0, 9);
