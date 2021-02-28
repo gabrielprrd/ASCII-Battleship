@@ -1,10 +1,7 @@
 package org.academiadecodigo.cachealots.battleship;
 
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,21 +17,6 @@ public class BattleshipServer {
 
     public static void main(String[] args) {
 
-        /*
-        Veryruru Importanturu
-
-        System.out.println("🍆 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣");
-        System.out.println("0️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("1️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("2️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("3️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("4️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("5️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("6️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("7️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("8️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        System.out.println("9️⃣ 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊 🌊");
-        */
 
         BattleshipServer bs = null;
         try {
@@ -108,8 +90,8 @@ public class BattleshipServer {
         players.remove(player);
     }
 
-    public String getAddress(){
-        return serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort();
+    public String getAddress() throws UnknownHostException {
+        return InetAddress.getLocalHost().getHostAddress() + ":" + serverSocket.getLocalPort();
     }
 
 }
