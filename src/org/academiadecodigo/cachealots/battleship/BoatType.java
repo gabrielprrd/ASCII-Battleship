@@ -2,9 +2,9 @@ package org.academiadecodigo.cachealots.battleship;
 
 public enum BoatType {
      JETSKI("jetski", 2, 1),
-     FISHINGBOAT("fishingBoat", 3, 1),
-     BIGGER("bigger",4, 1),
-     TITANIC("titanic", 6, 1);
+     FISHINGBOAT("fishingBoat", 3, 0),
+     BIGGER("bigger",4, 0),
+     TITANIC("titanic", 6, 0);
 
      private String name;
      private int size;

@@ -162,7 +162,9 @@ public class Player implements Runnable {
 
 
             while(!myTurn){
+                if(gameOver) return;
                 Thread.sleep(100);
+
             }
 
 
@@ -180,10 +182,7 @@ public class Player implements Runnable {
 
                 out.println("Sending shot..."); out.flush();
 
-
-
-
-                if(actualOpponentBoard[shotCol][shotRow].equals("🚢️")) {
+                if(actualOpponentBoard[shotCol][shotRow].equals("️🚢️")) {
 
                     opponentBoard[shotCol][shotRow] = "💥️";
 
@@ -194,14 +193,17 @@ public class Player implements Runnable {
                     out.flush();
 
                     opponent.getOut().println(opponent.toString());
+
                     opponent.getOut().println("Your boat got shot!\n" +
-                            "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
-                            "Preparing to receive another shot...\n");
+                            "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n");
                     opponent.getOut().flush();
 
                     opponentBoatCells--;
 
-                    continue;
+                    if(opponentBoatCells == 0) break;
+
+                    opponent.getOut().println("Preparing to receive another shot...\n");
+                    opponent.getOut().flush();
 
                 } else {
 
@@ -229,6 +231,7 @@ public class Player implements Runnable {
 
         }
 
+        opponent.setGameOver(true);
         opponent.getOut().println("You Lose!"); opponent.getOut().flush();
         out.println("You Win!"); out.flush();
 
@@ -247,13 +250,8 @@ public class Player implements Runnable {
         socket.close();
     }
 
-
-    public boolean hasLost(){
-        return gameOver;
-    }
-
-    public void lose() {
-        this.gameOver = true;
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 
     public void setOpponent(Player opponent) {
