@@ -3,6 +3,7 @@ package org.academiadecodigo.cachealots.battleship;
 import org.academiadecodigo.bootcamp.Prompt;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
+import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -16,16 +17,17 @@ public class Player implements Runnable {
     private Socket socket;
     private boolean waitingForOpponent;
 
-    private String[][] ownBoard;
-    private String[][] opponentBoard; //presentation : initially only waves
-    private String[][] actualOpponentBoard;
-    private BoardBuilder bibi;
-    private boolean finishedBuilding;
-    private boolean gameOver;
-    private BattleshipServer server;
+    private final BattleshipServer server;
+    private final BoardBuilder bibi;
 
+    private final String[][] ownBoard;
+    private final String[][] opponentBoard; //presentation : initially only waves
     private final PrintWriter out;
     private final Prompt prompt;
+    private String[][] actualOpponentBoard;
+
+    private boolean finishedBuilding;
+    private boolean gameOver;
     private boolean myTurn;
 
 
@@ -36,8 +38,8 @@ public class Player implements Runnable {
 
         bibi = new BoardBuilder(this);
 
-        ownBoard = bibi.buildDefault();
         opponentBoard = bibi.buildDefault();
+        ownBoard = bibi.buildDefault();
 
         out = new PrintWriter(socket.getOutputStream());
         prompt = new Prompt(socket.getInputStream(), new PrintStream(socket.getOutputStream()));
@@ -124,15 +126,34 @@ public class Player implements Runnable {
         askShotCol.setMessage("Where to shoot? (Column) ");
         askShotRow.setMessage("Where to shoot? (Row) ");
 
+        String [] gameOptions = {"Shoot", "Show my board", "Show opponent board", "Show ACTUAL opponent board"};
+
+        MenuInputScanner gameMenu = new MenuInputScanner(gameOptions);
+
+
+
         int opponentBoatCells = BoatType.JETSKI.getSize() * BoatType.JETSKI.getQuantity() +
                 BoatType.FISHINGBOAT.getSize() * BoatType.FISHINGBOAT.getQuantity() +
                 BoatType.BIGGER.getSize() * BoatType.BIGGER.getQuantity() +
                 BoatType.TITANIC.getSize() * BoatType.TITANIC.getQuantity();
 
+        boolean shoot = false;
+
+        while (!shoot) {
+
+            int gameMenuChoice = prompt.getUserInput(gameMenu);
+
+            switch (gameMenuChoice) {
+                case 1: shoot = true; break;
+                case 2: printBoard(ownBoard); break;
+                case 3: printBoard(opponentBoard); break;
+                case 4: printBoard(actualOpponentBoard); break;
+                default: System.out.println("error in game menu!");
+            }
+        }
+
 
         while (opponentBoatCells > 0){ //
-
-
 
             if (!myTurn) {
                 out.println("Waiting for opponent to shoot...");
@@ -146,6 +167,7 @@ public class Player implements Runnable {
 
 
             while(true){ //my Turn in progress...
+
 
                 int shotCol = prompt.getUserInput(askShotCol);
                 int shotRow = prompt.getUserInput(askShotRow);
@@ -331,4 +353,36 @@ public class Player implements Runnable {
                 return "🍆";
         }
     }
+
+    public void printBoard(String[][] board){
+
+        StringBuilder builder = new StringBuilder("X 0 1 2 3 4 5 6 7 8 9 \n");
+
+        String cell = "";
+
+        for (int row = 0; row < board.length; row++) {
+
+            builder.append(row).append(" ");
+
+            for (int col = 0; col < board[row].length; col++) {
+
+                cell = board[col][row];
+
+                if (cell.equals("️🚢️")) {
+                    cell = "@ ";
+                } else {
+                    cell = "~ ";
+                }
+
+                builder.append(cell);
+
+            }
+            builder.append("\n");
+        }
+        out.println(builder.toString());
+        out.flush();
+
+
+    }
+
 }
