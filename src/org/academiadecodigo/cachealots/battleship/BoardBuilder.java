@@ -1,16 +1,8 @@
 package org.academiadecodigo.cachealots.battleship;
 
-import examples.integer.IntegerRangeInputScannerTest;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
-import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
-import org.academiadecodigo.bootcamp.scanners.string.StringSetInputScanner;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
 
 public class BoardBuilder {
 
@@ -40,54 +32,19 @@ public class BoardBuilder {
 
         return defaultBoard;
     }
+
     // return and array with
-
     public void build() {
+        String[] randomOptions = { "Manual mode", "Random positions" };
+        MenuInputScanner randomOrNot = new MenuInputScanner(randomOptions);
 
-        while (remainingBoats > 0) {
+        randomOrNot.setMessage("Would you prefer random positions or manually choosing them?");
 
-            String[] menuOptions = {
-                    "Jetski (2 cells) (" + jetski + " left)",
-                    "Fishing boat (3 cells) (" + fishingBoat + " left)",
-                    "Bigger Fishing boat (4 cells) (" + bigger + " left)",
-                    "Titanic (6 cells) (" + titanic + " left)"};
-
-            MenuInputScanner menu = new MenuInputScanner(menuOptions);
-
-            int choice = player.getPrompt().getUserInput(menu);
-
-            if (canBuildBoat(choice)) {
-                BoatType boat = BoatType.values()[choice - 1];
-                buildBoat(boat);
-                remainingBoats--;
-
-                // decrements number of available boats for the specific option
-                switch (boat.getName()){
-                    case "jetski":
-                        jetski--;
-                    break;
-                    case "fishingBoat":
-                        fishingBoat--;
-                    break;
-                    case "bigger":
-                        bigger--;
-                        break;
-                    case "titanic":
-                        titanic--;
-                        break;
-                    default:
-                        System.out.println("deu merda");
-                        break;
-                }
-
-                // draw board through player's output stream
-                player.getOut().print(player.toString(true));
-                player.getOut().flush();
-                buildSuccessful = false;
-            }
-
+        if ((player.getPrompt().getUserInput(randomOrNot) == 2)) {
+            randomMode();
+        } else {
+            normalMode();
         }
-
     }
 
 
@@ -110,9 +67,6 @@ public class BoardBuilder {
 
     public void buildBoat(BoatType type) {
 
-
-        int cellSize = type.getSize();
-
         IntegerInputScanner askCol = new IntegerRangeInputScanner(0, 9);
         IntegerInputScanner askRow = new IntegerRangeInputScanner(0, 9);
 
@@ -126,6 +80,7 @@ public class BoardBuilder {
         directionMenu.setMessage("Choose a direction: ");
 
         //---------------
+        int cellSize = type.getSize();
         while (!buildSuccessful) {
 
             int col = player.getPrompt().getUserInput(askCol);
@@ -142,8 +97,8 @@ public class BoardBuilder {
                 draw(col, row, direction, cellSize);
 
             } else {
-                    player.getOut().print("Can't draw there! \n");
-                    player.getOut().flush();
+                player.getOut().print("Can't draw there! \n");
+                player.getOut().flush();
 
             }
         }
@@ -227,6 +182,80 @@ public class BoardBuilder {
                 break;
             default: //exit
                 return;
+        }
+
+    }
+
+    public void randomMode() {
+        int counter = 0;
+        while(remainingBoats > 0) {
+
+            for (BoatType boat : BoatType.values()) {
+                int boatQuantity = boat.getQuantity();
+                while(boatQuantity > 0) {
+                    counter++;
+                    int col = (int) (Math.random()*10);
+                    int row = (int) (Math.random()*10);
+                    int direction = (int) (Math.random()*4);
+
+                    player.getOut().print(counter + " \n");
+                    player.getOut().flush();
+
+                    if (checkIfCanDraw(col, row, direction, boat.getSize())) {
+
+                        draw(col, row, direction, boat.getSize());
+                        boatQuantity--;
+                        remainingBoats--;
+                    };
+                }
+            }
+
+        }
+    }
+
+    public void normalMode() {
+        while (remainingBoats > 0) {
+
+            String[] menuOptions = {
+                    "Jetski (2 cells) (" + jetski + " left)",
+                    "Fishing boat (3 cells) (" + fishingBoat + " left)",
+                    "Bigger Fishing boat (4 cells) (" + bigger + " left)",
+                    "Titanic (6 cells) (" + titanic + " left)"};
+
+            MenuInputScanner menu = new MenuInputScanner(menuOptions);
+
+            int choice = player.getPrompt().getUserInput(menu);
+
+            if (canBuildBoat(choice)) {
+                BoatType boat = BoatType.values()[choice - 1];
+                buildBoat(boat);
+                remainingBoats--;
+
+                // decrements number of available boats for the specific option
+                switch (boat.getName()){
+                    case "jetski":
+                        jetski--;
+                        break;
+                    case "fishingBoat":
+                        fishingBoat--;
+                        break;
+                    case "bigger":
+                        bigger--;
+                        break;
+                    case "titanic":
+                        titanic--;
+                        break;
+                    default:
+                        System.out.println("deu merda");
+                        break;
+                }
+
+                // draw board through player's output stream
+                player.getOut().print(player.toString(true));
+                player.getOut().flush();
+                buildSuccessful = false;
+            }
+
         }
 
     }

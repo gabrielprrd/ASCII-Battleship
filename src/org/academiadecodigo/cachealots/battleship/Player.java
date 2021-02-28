@@ -8,9 +8,7 @@ import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class Player implements Runnable {
 
@@ -127,7 +125,7 @@ public class Player implements Runnable {
         askShotCol.setMessage("Where to shoot? (Column) ");
         askShotRow.setMessage("Where to shoot? (Row) ");
 
-        String [] gameOptions = {"Shoot", "Show my board", "Show opponent board", "Show ACTUAL opponent board"};
+        String [] gameOptions = {"Shoot", "Show my board", "Show opponent board"};
 
         MenuInputScanner gameMenu = new MenuInputScanner(gameOptions);
 
@@ -138,20 +136,7 @@ public class Player implements Runnable {
                 BoatType.BIGGER.getSize() * BoatType.BIGGER.getQuantity() +
                 BoatType.TITANIC.getSize() * BoatType.TITANIC.getQuantity();
 
-        boolean shoot = false;
 
-        while (!shoot) {
-
-            int gameMenuChoice = prompt.getUserInput(gameMenu);
-
-            switch (gameMenuChoice) {
-                case 1: shoot = true; break;
-                case 2: printBoard(ownBoard); break;
-                case 3: printBoard(opponentBoard); break;
-                case 4: printBoard(actualOpponentBoard); break;
-                default: System.out.println("error in game menu!");
-            }
-        }
 
 
         while (opponentBoatCells > 0){ //
@@ -171,6 +156,19 @@ public class Player implements Runnable {
 
             while(true){ //my Turn in progress...
 
+                boolean shoot = false;
+
+                while (!shoot) {
+
+                    int gameMenuChoice = prompt.getUserInput(gameMenu);
+
+                    switch (gameMenuChoice) {
+                        case 1: shoot = true; break;
+                        case 2: printBoard(ownBoard); break;
+                        case 3: printBoard(opponentBoard); break;
+                        default: System.out.println("error in game menu!");
+                    }
+                }
 
                 int shotCol = prompt.getUserInput(askShotCol);
                 int shotRow = prompt.getUserInput(askShotRow);
