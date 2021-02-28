@@ -28,6 +28,7 @@ public class Player implements Runnable {
     private boolean finishedBuilding;
     private boolean gameOver;
     private boolean myTurn;
+    private boolean Emoji;
 
 
     public Player(Socket socket, boolean waitingForOpponent, BattleshipServer server) throws IOException {
@@ -84,9 +85,21 @@ public class Player implements Runnable {
             try { Thread.sleep(500);
             } catch (InterruptedException e) { e.printStackTrace(); }
         }
+        String [] gameOptions = {"ASCII", "Emoji"};
 
-        out.print(this.toString(true));
-        out.flush();
+        MenuInputScanner gameDisplay = new MenuInputScanner(gameOptions);
+        gameDisplay.setMessage("Do you want you display to be with emojis or ASCII?");
+        // do you want to play emoji or ascii
+        int chooseDisplay =  prompt.getUserInput(gameDisplay);
+
+        if (chooseDisplay ==1){
+            printBoard(ownBoard);
+        }else {
+            out.print(this.toString(true));
+            out.flush();
+            Emoji = true;
+        }
+
 
         bibi.build(); //run() blocks here while player is building
 
@@ -149,6 +162,7 @@ public class Player implements Runnable {
 
             while(!myTurn){
                 if(gameOver) return;
+                if(socket.isClosed()) return;
                 Thread.sleep(100);
 
             }
@@ -163,10 +177,28 @@ public class Player implements Runnable {
                     int gameMenuChoice = prompt.getUserInput(gameMenu);
 
                     switch (gameMenuChoice) {
-                        case 1: shoot = true; break;
-                        case 2: printBoard(ownBoard); break;
-                        case 3: printBoard(opponentBoard); break;
-                        default: System.out.println("error in game menu!");
+                        case 1:
+                            shoot = true;
+                            break;
+                        case 2:
+                            if (!Emoji) {
+                            printBoard(ownBoard);
+                            break;
+                        }
+                        out.print(toString(true));
+                        out.flush();
+                        break;
+                        case 3:
+                            if (!Emoji) {
+                                printBoard(opponentBoard);
+                                break;
+                            }
+                            out.print(PrintEmojiEnemyBoard());
+                            out.flush();
+                            break;
+                        default:
+                            System.out.println("error in game menu!");
+                            break;
                     }
                 }
 
@@ -183,16 +215,21 @@ public class Player implements Runnable {
 
                 if(actualOpponentBoard[shotCol][shotRow].equals("️🚢️")) {
 
-                    opponentBoard[shotCol][shotRow] = "💥️";
+                    opponentBoard[shotCol][shotRow] = "💥";
 
                     opponent.updateBoard(shotCol, shotRow, "💥");
-
-                    out.println(this.toString() + "\n");
+                    if (Emoji){
+                    out.println(this.PrintEmojiEnemyBoard() + "\n");
+                    }else{
+                        printBoard(opponentBoard);
+                    }
                     out.println("💥 HIT BOAT!!! \nYour turn again!\n\n");
                     out.flush();
-
+                    if (Emoji){
                     opponent.getOut().println(opponent.toString());
-
+                     }else {
+                        opponent.printBoard(opponent.getBoard());
+                    }
                     opponent.getOut().println("Your boat got shot!\n" +
                             "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n");
                     opponent.getOut().flush();
@@ -210,11 +247,17 @@ public class Player implements Runnable {
                     opponent.updateBoard(shotCol, shotRow, "💦️");
 
                     out.println("💦️ Hit water... \n");
-                    out.println(this.toString());
-                    out.flush();
+                    if (Emoji) {
+                        out.println(this.PrintEmojiEnemyBoard());
+                        out.flush();
+                        opponent.getOut().println(opponent.toString() + "\n");
+                    }else {
+                        printBoard(opponentBoard);
+                        out.flush();
+                        opponent.printBoard(opponent.getBoard());
+                    }
 
 
-                    opponent.getOut().println(opponent.toString() + "\n");
                     opponent.getOut().println("Opponent missed!\n" +
                             "Coordinates: Col: " + shotCol + " | Row: " + shotRow + "\n" +
                             "Your turn again!\n");
@@ -376,6 +419,21 @@ public class Player implements Runnable {
         return display.toString();
     }
 
+    public String PrintEmojiEnemyBoard(){
+        StringBuilder display = new StringBuilder();
+        display.append("Opponent Board \n");
+        display.append("🍆 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣\n");
+        for (int row=0; row< opponentBoard.length; row++) {
+            display.append(numberToString(row)+" ");
+            for (int col = 0; col < opponentBoard.length; col++) {
+                display.append(opponentBoard[col][row]+" ");
+            }
+            display.append("\n");
+        }
+        display.append("\n");
+        return display.toString();
+    }
+
     public String toString(){
         return toString(false);
     }
@@ -422,11 +480,32 @@ public class Player implements Runnable {
 
                 cell = board[col][row];
 
+                switch (cell){
+                    case "️🚢️":
+                        System.out.println("????");
+                        cell = "@ ";
+                        break;
+                    case "💦️":
+                        cell = "O ";
+                        break;
+                    case "💥":
+                        cell = "X ";
+                        break;
+                    case "🌊":
+                        cell = "~ ";
+                    default:
+                        cell = "~ ";
+                        break;
+
+                }
+
+                /*
                 if (cell.equals("️🚢️")) {
                     cell = "@ ";
                 } else {
                     cell = "~ ";
                 }
+                */
 
                 builder.append(cell);
 

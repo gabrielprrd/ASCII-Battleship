@@ -198,8 +198,7 @@ public class BoardBuilder {
                     int row = (int) (Math.random()*10);
                     int direction = (int) (Math.random()*4);
 
-                    player.getOut().print(counter + " \n");
-                    player.getOut().flush();
+
 
                     if (checkIfCanDraw(col, row, direction, boat.getSize())) {
 
