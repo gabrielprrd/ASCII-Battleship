@@ -5,7 +5,7 @@
     <!-- Initialize build properties  -->
     <target name="init" description="Initializes properties">
         <property name="project.name" value="ASCII-Battleship" />
-        <property name="src.dir" value="src" /> <!-- Joana: alterar a linha de baixo conforme o directório de instalação no MAC -->
+        <property name="src.dir" value="src" />
         <property name="main.class" value="org.academiadecodigo.cachealots.battleship.BattleshipServer"/>
         <property name="build.dir" value="build" />
         <property name="classes.dir" value="${build.dir}/classes" />
