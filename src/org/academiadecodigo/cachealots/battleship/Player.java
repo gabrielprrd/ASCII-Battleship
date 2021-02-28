@@ -8,6 +8,7 @@ import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -231,9 +232,66 @@ public class Player implements Runnable {
 
         }
 
+        String youWin = "\n" +
+                "██╗   ██╗ ██████╗ ██╗   ██╗           \n" +
+                "╚██╗ ██╔╝██╔═══██╗██║   ██║           \n" +
+                " ╚████╔╝ ██║   ██║██║   ██║           \n" +
+                "  ╚██╔╝  ██║   ██║██║   ██║           \n" +
+                "   ██║   ╚██████╔╝╚██████╔╝           \n" +
+                "   ╚═╝    ╚═════╝  ╚═════╝            \n" +
+                "                                      \n" +
+                "        ██╗    ██╗██╗███╗   ██╗    ██╗\n" +
+                "        ██║    ██║██║████╗  ██║    ██║\n" +
+                "        ██║ █╗ ██║██║██╔██╗ ██║    ██║\n" +
+                "        ██║███╗██║██║██║╚██╗██║    ╚═╝\n" +
+                "        ╚███╔███╔╝██║██║ ╚████║    ██╗\n" +
+                "         ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝    ╚═╝\n" +
+                "\n" +
+                "Congratulations!!\n" +
+                "\n" +
+                "--------------\n" +
+                "\n";
+
+        String youLose = "\n" +
+                "    ██╗   ██╗ ██████╗ ██╗   ██╗           \n" +
+                "    ╚██╗ ██╔╝██╔═══██╗██║   ██║           \n" +
+                "     ╚████╔╝ ██║   ██║██║   ██║           \n" +
+                "      ╚██╔╝  ██║   ██║██║   ██║           \n" +
+                "       ██║   ╚██████╔╝╚██████╔╝           \n" +
+                "       ╚═╝    ╚═════╝  ╚═════╝            \n" +
+                "██╗      ██████╗ ███████╗███████╗         \n" +
+                "██║     ██╔═══██╗██╔════╝██╔════╝         \n" +
+                "██║     ██║   ██║███████╗█████╗           \n" +
+                "██║     ██║   ██║╚════██║██╔══╝           \n" +
+                "███████╗╚██████╔╝███████║███████╗██╗██╗██╗\n" +
+                "╚══════╝ ╚═════╝ ╚══════╝╚══════╝╚═╝╚═╝╚═╝\n" +
+                "\n" +
+                "Better luck next time!\n" +
+                "\n" +
+                "--------------\n" +
+                "\n";
+
+
+
+
+        String thankYou = "Thank you for playing\n" +
+                "\n" +
+                "-- B A T T O R U S H I P P O --\n" +
+                "\n" +
+                " ~ by: GabiGold, Rû, e VH ~\n" +
+                " < A/C_ >  #57 < CACHEalots_ > \n" +
+                "\n" +
+                "Play again via netcat @ " + server.getAddress() + "\n";
+
         opponent.setGameOver(true);
-        opponent.getOut().println("You Lose!"); opponent.getOut().flush();
-        out.println("You Win!"); out.flush();
+
+        opponent.getOut().println(youLose + thankYou);
+        out.println(youWin + thankYou);
+
+
+
+        opponent.getOut().flush();
+        out.flush();
 
         server.eject(opponent);
         server.eject(this);

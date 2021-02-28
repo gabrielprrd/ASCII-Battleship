@@ -97,7 +97,6 @@ public class BattleshipServer {
             player.setWaitingForOpponent(false);
             opponent.setWaitingForOpponent(false);
 
-
             opponent.setOpponent(player);
 
             playerWaiting = false;
@@ -107,6 +106,10 @@ public class BattleshipServer {
 
     public void eject(Player player){
         players.remove(player);
+    }
+
+    public String getAddress(){
+        return serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort();
     }
 
 }
